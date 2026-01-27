@@ -1,2 +1,6 @@
+.idea
+
+lib/kb_bakta/kb_baktaImpl.py.bak*
+
 test_local
 sdk.cfg
