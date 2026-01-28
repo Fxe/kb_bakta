@@ -11,17 +11,24 @@ RUN export TZ=Etc/UTC
 RUN export DEBIAN_FRONTEND=noninteractive
 
 RUN apk add build-base
+RUN apk add openjdk8-jre
 # RUN apt-get update
 
 # Copy in the SDK
 COPY --from=kbase/kb-sdk:1.2.1 /src /sdk
 RUN sed -i 's|/src|/sdk|g' /sdk/bin/*
 
+ENV PATH=/sdk/bin:$PATH
 
 # Fix KBase Catalog Registration Issue
 ENV PIP_PROGRESS_BAR=off
+
+# Add KBase deps
 COPY requirements_kbase.txt /tmp/requirements_kbase.txt
 RUN /opt/conda/bin/pip install -r /tmp/requirements_kbase.txt
+ADD biokbase /opt/conda/lib/python3.11/site-packages
+ADD biokbase/user-env.sh /kb/deployment/user-env.sh
+
 
 # -----------------------------------------
 
