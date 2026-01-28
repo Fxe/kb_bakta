@@ -10,7 +10,7 @@ LABEL maintainer=fliu@anl.gov
 RUN export TZ=Etc/UTC
 RUN export DEBIAN_FRONTEND=noninteractive
 
-# RUN apt-get update
+RUN apk add build-base
 # RUN apt-get update
 
 # Copy in the SDK
@@ -20,7 +20,8 @@ RUN sed -i 's|/src|/sdk|g' /sdk/bin/*
 
 # Fix KBase Catalog Registration Issue
 ENV PIP_PROGRESS_BAR=off
-
+COPY requirements_kbase.txt /tmp/requirements_kbase.txt
+RUN /opt/conda/bin/pip install -r /tmp/requirements_kbase.txt
 
 # -----------------------------------------
 
@@ -32,7 +33,7 @@ WORKDIR /kb/module
 
 # RUN make all
 
-RUN /opt/conda/bin/pip install -r /kb/module/requirements_kbase.txt
+
 
 ENTRYPOINT [ "./scripts/entrypoint.sh" ]
 

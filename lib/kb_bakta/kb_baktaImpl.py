@@ -24,7 +24,7 @@ class kb_bakta:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:Fxe/kb_bakta.git"
-    GIT_COMMIT_HASH = "1f9ba934935209e6d25edb32970b4b4553674406"
+    GIT_COMMIT_HASH = "7c7bbf4412f2ebace1a348f20f77cdcb6bfd75f5"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
