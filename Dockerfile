@@ -17,7 +17,7 @@ RUN chmod -R a+rw /kb/module
 
 WORKDIR /kb/module
 
-RUN make all
+# RUN make all
 
 ENTRYPOINT [ "./scripts/entrypoint.sh" ]
 
