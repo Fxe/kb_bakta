@@ -4,6 +4,7 @@ import logging
 import os
 
 from installed_clients.KBaseReportClient import KBaseReport
+from installed_clients.DataFileUtilClient import DataFileUtil
 #END_HEADER
 
 
@@ -37,6 +38,7 @@ class kb_bakta:
         self.shared_folder = config['scratch']
         logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                             level=logging.INFO)
+        self.dfu = DataFileUtil(self.callback_url)
         #END_CONSTRUCTOR
         pass
 
@@ -52,11 +54,55 @@ class kb_bakta:
         # return variables are: output
         #BEGIN run_kb_bakta
 
-        print('hello bakta')
+        print(params)
+        print(ctx)
+
+        dfu_get_result = self.dfu.get_objects({'object_refs': [f'{params["workspace_id"]}/{params["input_genome"]}']})
+        genome_object = dfu_get_result['data'][0]['data']
+
+        features = {}
+
+        for f in genome_object['features']:
+            protein_translation = f.get('protein_translation')
+            feature_id = f['id']
+            if protein_translation:
+                if feature_id not in features:
+                    features[feature_id] = protein_translation
+                else:
+                    raise ValueError('Duplicate feature id:', feature_id)
+
+        with open('/tmp/input_genome.faa', 'w') as fh:
+            for i, s in features.items():
+                fh.write(f'>{i}\n')
+                fh.write(f'{s}\n')
+
+        print('/tmp/input_genome.faa created')
+
+        # Build cmd
+        cmd = [
+            'bakta_proteins',
+            #'--threads', str(threads),
+            #'--db', '/host/db',
+            #'--output', f'/tmp/output',
+            #'/tmp/input_genome.faa',
+        ]
+        
+        import subprocess
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+        )
+
+        print(result)
+
+        print(result.returncode)
+        print(result.stdout.strip() if result.stdout else '')
+        print(result.stderr.strip() if result.stderr else '')
 
         report = KBaseReport(self.callback_url)
-        report_info = report.create({'report': {'objects_created':[],
-                                                'text_message': params['parameter_1']},
+        report_info = report.create({'report': {'objects_created': [],
+                                                'text_message': params['input_genome']},
                                                 'workspace_name': params['workspace_name']})
         output = {
             'report_name': report_info['name'],
