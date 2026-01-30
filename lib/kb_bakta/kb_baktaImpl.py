@@ -86,7 +86,7 @@ class kb_bakta:
             #'--output', f'/tmp/output',
             #'/tmp/input_genome.faa',
         ]
-        
+
         import subprocess
         result = subprocess.run(
             cmd,

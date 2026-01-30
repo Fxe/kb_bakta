@@ -13,3 +13,5 @@ module-version:
 owners:
     [filipeliu]
 
+data-version:
+    10.5281/zenodo.14916843

@@ -1,7 +1,7 @@
 #
 # define display information
 #
-name: Annotate Genome with kofam_scan
+name: Annotate Genome Proteins with Bakta
 
 tooltip: |
     Rapid & standardized annotation of bacterial genomes, MAGs & plasmids
