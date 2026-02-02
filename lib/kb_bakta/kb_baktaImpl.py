@@ -97,7 +97,7 @@ class kb_bakta:
             text=True,
         )
 
-        print(os.listdir('/tmp/output/results'))
+        print(os.listdir('/tmp/output'))
 
         print(result)
 
@@ -105,9 +105,9 @@ class kb_bakta:
         print(result.stdout.strip() if result.stdout else '')
         print(result.stderr.strip() if result.stderr else '')
 
-        with open('/tmp/output/results/input_genome.json', 'r') as fh:
-            annotation = json.load(fh)
-            print(annotation)
+        #with open('/tmp/output/results/input_genome.json', 'r') as fh:
+        #    annotation = json.load(fh)
+        #    print(annotation)
 
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': {'objects_created': [],
