@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #BEGIN_HEADER
+import json
 import logging
 import os
 
@@ -78,15 +79,15 @@ class kb_bakta:
 
         print('/tmp/input_genome.faa created')
 
-        print(os.listdir('/data'))
-
+        print(os.listdir('/data/db'))
+        threads = 40
         # Build cmd
         cmd = [
             'bakta_proteins',
-            #'--threads', str(threads),
-            #'--db', '/host/db',
-            #'--output', f'/tmp/output',
-            #'/tmp/input_genome.faa',
+            '--threads', str(threads),
+            '--db', '/data/db',
+            '--output', f'/tmp/output',
+            '/tmp/input_genome.faa',
         ]
 
         import subprocess
@@ -96,11 +97,17 @@ class kb_bakta:
             text=True,
         )
 
+        print(os.listdir('/tmp/output/results'))
+
         print(result)
 
         print(result.returncode)
         print(result.stdout.strip() if result.stdout else '')
         print(result.stderr.strip() if result.stderr else '')
+
+        with open('/tmp/output/results/input_genome.json', 'r') as fh:
+            annotation = json.load(fh)
+            print(annotation)
 
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': {'objects_created': [],
