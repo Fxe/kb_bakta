@@ -26,7 +26,7 @@ class kb_bakta:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:Fxe/kb_bakta.git"
-    GIT_COMMIT_HASH = "7c7bbf4412f2ebace1a348f20f77cdcb6bfd75f5"
+    GIT_COMMIT_HASH = "e84be351f34ca0599b5154de304bcdfa8dd4438c"
 
     #BEGIN_CLASS_HEADER
     #END_CLASS_HEADER
@@ -79,6 +79,8 @@ class kb_bakta:
 
         print('/tmp/input_genome.faa created')
 
+        #os.makedirs("")
+
         print(os.listdir('/data/db'))
         threads = 40
         # Build cmd
@@ -105,9 +107,9 @@ class kb_bakta:
         print(result.stdout.strip() if result.stdout else '')
         print(result.stderr.strip() if result.stderr else '')
 
-        #with open('/tmp/output/results/input_genome.json', 'r') as fh:
-        #    annotation = json.load(fh)
-        #    print(annotation)
+        with open('/tmp/output/input_genome.json', 'r') as fh:
+            annotation = json.load(fh)
+            print(annotation)
 
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': {'objects_created': [],
