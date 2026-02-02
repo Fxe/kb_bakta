@@ -78,6 +78,8 @@ class kb_bakta:
 
         print('/tmp/input_genome.faa created')
 
+        print(os.listdir('/data'))
+
         # Build cmd
         cmd = [
             'bakta_proteins',
