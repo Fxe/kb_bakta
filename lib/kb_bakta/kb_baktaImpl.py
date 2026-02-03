@@ -26,9 +26,19 @@ class kb_bakta:
     ######################################### noqa
     VERSION = "0.0.1"
     GIT_URL = "git@github.com:Fxe/kb_bakta.git"
-    GIT_COMMIT_HASH = "e84be351f34ca0599b5154de304bcdfa8dd4438c"
+    GIT_COMMIT_HASH = "0987738bd55827d0d9177962eea817b937d47e3e"
 
     #BEGIN_CLASS_HEADER
+
+    def annotate_proteins(self, ctx, params):
+
+        print(ctx)
+        print(params)
+
+        print("hello ?")
+
+        return params
+
     #END_CLASS_HEADER
 
     # config contains contents of config file in a hash or None if it couldn't
@@ -127,6 +137,61 @@ class kb_bakta:
                              'output is not type dict as required.')
         # return the results
         return [output]
+
+    def annotate_proteins(self, ctx, proteins):
+        """
+        :param proteins: instance of mapping from String to String
+        :returns: instance of mapping from String to unspecified object
+        """
+        # ctx is the context object
+        # return variables are: returnVal
+        #BEGIN annotate_proteins
+
+        with open('/tmp/input_genome.faa', 'w') as fh:
+            for i, s in proteins.items():
+                fh.write(f'>{i}\n')
+                fh.write(f'{s}\n')
+
+        print('/tmp/input_genome.faa created')
+
+        print(os.listdir('/data/db'))
+        threads = 40
+        # Build cmd
+        cmd = [
+            'bakta_proteins',
+            '--threads', str(threads),
+            '--db', '/data/db',
+            '--output', f'/tmp/output',
+            '/tmp/input_genome.faa',
+        ]
+
+        import subprocess
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+        )
+
+        print(os.listdir('/tmp/output'))
+
+        print(result)
+
+        print(result.returncode)
+        print(result.stdout.strip() if result.stdout else '')
+        print(result.stderr.strip() if result.stderr else '')
+
+        returnVal = {}
+        with open('/tmp/output/input_genome.json', 'r') as fh:
+            returnVal = json.load(fh)
+
+        #END annotate_proteins
+
+        # At some point might do deeper type checking...
+        if not isinstance(returnVal, dict):
+            raise ValueError('Method annotate_proteins return value ' +
+                             'returnVal is not type dict as required.')
+        # return the results
+        return [returnVal]
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",

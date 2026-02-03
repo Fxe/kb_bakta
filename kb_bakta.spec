@@ -13,4 +13,5 @@ module kb_bakta {
     */
     funcdef run_kb_bakta(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
+    funcdef annotate_proteins(mapping<string,string> proteins) returns (mapping<string,UnspecifiedObject>) authentication required;
 };
