@@ -6,7 +6,6 @@ LABEL maintainer=fliu@anl.gov
 # to run your App.  For instance, you could place an apt-get update or
 # install line here, a git checkout to download code, or run any other
 # installation scripts.
-RUN echo 0
 RUN export TZ=Etc/UTC
 RUN export DEBIAN_FRONTEND=noninteractive
 
@@ -38,7 +37,7 @@ RUN chmod -R a+rw /kb/module
 
 WORKDIR /kb/module
 
-RUN make all
+RUN PATH=/sdk/bin:$PATH make all
 
 
 
