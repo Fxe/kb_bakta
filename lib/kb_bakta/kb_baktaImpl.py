@@ -3,6 +3,7 @@
 import json
 import logging
 import os
+from pathlib import Path
 
 from installed_clients.KBaseReportClient import KBaseReport
 from installed_clients.DataFileUtilClient import DataFileUtil
@@ -30,14 +31,47 @@ class kb_bakta:
 
     #BEGIN_CLASS_HEADER
 
-    def annotate_proteins(self, ctx, params):
+    @staticmethod
+    def annotate_proteins(features: dict,
+                          output: Path = Path('/tmp/output'),
+                          tmp_protein_faa: Path = Path('/tmp/input_genome.faa')) -> Path:
 
-        print(ctx)
-        print(params)
+        with open(tmp_protein_faa, 'w') as fh:
+            for i, s in features.items():
+                fh.write(f'>{i}\n')
+                fh.write(f'{s}\n')
 
-        print("hello ?")
+        print(f'{tmp_protein_faa} created')
 
-        return params
+        print(os.listdir('/data/db'))
+        threads = 40
+        # Build cmd
+        cmd = [
+            'bakta_proteins',
+            '--threads', str(threads),
+            '--db', '/data/db',
+            '--output', str(output),
+            str(tmp_protein_faa),
+        ]
+
+        import subprocess
+        result = subprocess.run(
+            cmd,
+            capture_output=True,
+            text=True,
+        )
+
+        if output.exists() and output.is_dir():
+            for f in os.listdir(output):
+                print('created:', f)
+
+        print(result)
+
+        print(result.returncode)
+        print(result.stdout.strip() if result.stdout else '')
+        print(result.stderr.strip() if result.stderr else '')
+
+        return output
 
     #END_CLASS_HEADER
 
@@ -82,40 +116,7 @@ class kb_bakta:
                 else:
                     raise ValueError('Duplicate feature id:', feature_id)
 
-        with open('/tmp/input_genome.faa', 'w') as fh:
-            for i, s in features.items():
-                fh.write(f'>{i}\n')
-                fh.write(f'{s}\n')
-
-        print('/tmp/input_genome.faa created')
-
-        #os.makedirs("")
-
-        print(os.listdir('/data/db'))
-        threads = 40
-        # Build cmd
-        cmd = [
-            'bakta_proteins',
-            '--threads', str(threads),
-            '--db', '/data/db',
-            '--output', f'/tmp/output',
-            '/tmp/input_genome.faa',
-        ]
-
-        import subprocess
-        result = subprocess.run(
-            cmd,
-            capture_output=True,
-            text=True,
-        )
-
-        print(os.listdir('/tmp/output'))
-
-        print(result)
-
-        print(result.returncode)
-        print(result.stdout.strip() if result.stdout else '')
-        print(result.stderr.strip() if result.stderr else '')
+        self.annotate_proteins(features)
 
         with open('/tmp/output/input_genome.json', 'r') as fh:
             annotation = json.load(fh)
