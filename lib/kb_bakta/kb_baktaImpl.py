@@ -32,7 +32,7 @@ class kb_bakta:
     #BEGIN_CLASS_HEADER
 
     @staticmethod
-    def annotate_proteins(features: dict,
+    def run_bakta(features: dict,
                           output: Path = Path('/tmp/output'),
                           tmp_protein_faa: Path = Path('/tmp/input_genome.faa')) -> Path:
 
@@ -116,7 +116,7 @@ class kb_bakta:
                 else:
                     raise ValueError('Duplicate feature id:', feature_id)
 
-        self.annotate_proteins(features)
+        self.run_bakta(features)
 
         with open('/tmp/output/input_genome.json', 'r') as fh:
             annotation = json.load(fh)
